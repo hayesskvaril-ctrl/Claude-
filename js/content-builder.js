@@ -363,6 +363,7 @@ ${warn("Scope permissions in automation", "In CI, pass an explicit <code>--allow
       },
     ],
     quiz: [
+      { q: "In the feature walkthrough, where does your review have the most leverage?", options: ["After the PR is merged", "On the plan, before code is written", "Only on the final commit message", "Nowhere; let Claude decide"], answer: 1, why: "Two sentences of plan review can save two rounds of rework." },
       { q: "What should you do before asking Claude Code to implement a non-trivial change?", options: ["Enable bypass permissions", "Explore and plan first, for example in plan mode", "Write the code yourself", "Run /compact"], answer: 1, why: "Explore then plan then code then verify is the most reliable loop." },
       { q: "Which is the best content for CLAUDE.md?", options: ["\"Write clean, high-quality code\"", "The exact test, lint and build commands, plus project gotchas", "Your entire README", "A list of every file"], answer: 1, why: "Include specific things Claude can't discover itself. Every line costs context." },
       { q: "You need prettier to run after every edit, without exception. What do you use?", options: ["A CLAUDE.md instruction", "A PostToolUse hook", "A subagent", "An MCP server"], answer: 1, why: "Hooks are deterministic; instructions are guidance." },

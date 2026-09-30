@@ -6,10 +6,12 @@ A self-paced training website for Claude, from your first chat to production age
 
 | Level | For | Covers |
 |---|---|---|
-| 1. Foundations | Complete beginners | What Claude is, where to use it, first conversations, files and images, everyday uses, accuracy and privacy |
-| 2. Practitioner | Regular users | Prompting fundamentals and advanced techniques, Projects, artifacts, Research, connectors, memory and styles, common mistakes |
-| 3. Builder | Developers | Coding in chat, Claude Code setup and workflow, CLAUDE.md, permissions, skills, hooks, MCP, subagents, headless mode and CI |
-| 4. Architect | AI product engineers | API quickstart, Messages API, thinking and effort, tool use, structured outputs, documents and citations, caching and cost, agent design, evals, production |
+| 1. Foundations | Complete beginners | How Claude works, what it is, where to use it, first conversations, files and images, everyday uses, accuracy and privacy |
+| 2. Practitioner | Regular users | Prompting fundamentals, advanced techniques and prompt teardowns, Projects, artifacts, Research, connectors, memory and styles, common mistakes |
+| 3. Builder | Developers | Coding in chat, Claude Code setup and workflow, a full feature walkthrough, CLAUDE.md, permissions, skills, hooks, MCP, subagents, headless mode and CI |
+| 4. Architect | AI product engineers | API quickstart, Messages API, thinking and effort, tool use, building an MCP server, structured outputs, documents and citations, caching and cost, agent design, context engineering, evals, production |
+
+Every lesson opens with **why it matters** and closes with **expert commentary** and **key takeaways**. Each level starts with an introduction and learning outcomes.
 
 Plus a prompt library, cheat sheets, a glossary, learning paths by role, a quiz for each level, full-text search, progress tracking (stored in your browser) and light/dark themes.
 
@@ -35,6 +37,8 @@ js/content-practitioner.js Level 2 lessons + quiz
 js/content-builder.js      Level 3 lessons + quiz
 js/content-architect.js    Level 4 lessons + quiz
 js/content-reference.js    prompt library, cheat sheets, glossary, learning paths
+js/commentary-1.js         commentary + new lessons, Levels 1-2
+js/commentary-2.js         commentary + new lessons, Levels 3-4
 js/app.js                  routing, navigation, search, progress, quizzes
 ```
 
@@ -51,6 +55,8 @@ Add an object to the `lessons` array in the right `content-*.js` file:
   body: `<p>HTML content.</p>${code("python", `print("hi")`)}`,
 }
 ```
+
+To add commentary, add an entry keyed by the lesson id in `commentary-*.js` with `why`, `deeper` (HTML) and `takeaways` (array).
 
 Helpers available in content files: `code`, `tip`, `warn`, `pro`, `note`, `compare`, `table`, `steps`, `exercise`.
 

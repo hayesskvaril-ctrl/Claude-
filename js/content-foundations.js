@@ -215,6 +215,7 @@ ${note("Why Claude sometimes says no", "Claude is trained to decline some reques
       },
     ],
     quiz: [
+      { q: "Why do very long chats tend to get less sharp over time?", options: ["Claude gets tired", "Old, irrelevant content competes for attention in the context window", "The model downgrades itself", "Chats expire after an hour"], answer: 1, why: "Everything must fit in the context window, and clutter dilutes what matters now." },
       { q: "Claude gives you a statistic with a specific percentage. What should you do before using it in a report?", options: ["Use it; Claude is always accurate", "Verify it with a reliable source or ask Claude to cite one", "Round it to the nearest 10%", "Ask Claude the same question again"], answer: 1, why: "Claude can be confidently wrong. Facts that matter should be checked against a source." },
       { q: "You've been chatting about a marketing plan and now want help with an unrelated spreadsheet. What's best?", options: ["Keep going in the same chat", "Start a new chat", "Switch to the smallest model", "Upload the plan again"], answer: 1, why: "A new chat keeps context focused, answers sharper and usage lower." },
       { q: "Which message is most likely to get a great first answer?", options: ["\"Help with email\"", "\"Write an email\"", "\"Write a friendly 100-word email to my team moving Thursday's meeting to Friday 10am\"", "\"EMAIL!!!\""], answer: 2, why: "It states the task, audience, context, tone and length." },

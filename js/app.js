@@ -15,8 +15,16 @@
   const saveDone = () => store.set("ca-done", [...done]);
 
   // ---------- Index ----------
+  // Slot the deep-dive lessons from commentary-*.js into their levels.
+  (ACADEMY.extraLessons || []).forEach(({ level, after, lesson }) => {
+    const list = levels.find((l) => l.id === level).lessons;
+    const at = after ? list.findIndex((l) => l.id === after) + 1 : 0;
+    list.splice(at, 0, lesson);
+  });
+  const commentary = ACADEMY.commentary || {};
+  const levelIntro = ACADEMY.levelIntro || {};
   const lessons = [];
-  levels.forEach((lvl) => lvl.lessons.forEach((l, i) => lessons.push({ ...l, level: lvl, index: i })));
+  levels.forEach((lvl) => lvl.lessons.forEach((l, i) => lessons.push({ ...l, ...commentary[l.id], level: lvl, index: i })));
   const lessonById = Object.fromEntries(lessons.map((l) => [l.id, l]));
   const levelById = Object.fromEntries(levels.map((l) => [l.id, l]));
   const lc = (lvl) => `style="--lc: var(${lvl.color})"`;
@@ -107,12 +115,18 @@
       .map((id) => lessonById[id]).map((l) => `<a class="tile" href="#${l.id}" ${lc(l.level)}><span class="tag">${l.level.name} · ${l.minutes} min</span><h3>${esc(l.title)}</h3><p>${esc(l.summary)}</p></a>`).join("");
     return `<div class="wide">
       <section class="hero">
-        <span class="eyebrow">Self-paced · ${lessons.length} lessons · 4 levels · free</span>
-        <h1>Learn Claude, from <em>first chat to production agents</em>.</h1>
-        <p class="lede">One place to go from asking your first question to shipping agents on the API. Clear lessons, copy-ready prompts and code, quizzes, and cheat sheets. Pick up wherever you are.</p>
+        <span class="eyebrow">Free, self-paced Claude training</span>
+        <h1>Get brilliant at Claude.</h1>
+        <p class="lede">Everything in one place, from your very first question to shipping agents on the API. Plain-English lessons with expert commentary, copy-ready prompts and code, and quizzes to check you've got it.</p>
         <div class="btn-row">
-          <a class="btn btn-primary" href="#${next ? next.id : "prompts"}">${done.size ? "Continue: " + esc(next ? next.title : "Prompt library") : "Start with lesson 1"} →</a>
-          <a class="btn btn-ghost" href="#paths">Choose a path for your role</a>
+          <a class="btn btn-light" href="#${next ? next.id : "prompts"}">${done.size ? "Continue: " + esc(next ? next.title : "Prompt library") : "Start learning"} →</a>
+          <a class="btn btn-outline-light" href="#paths">Find your path</a>
+        </div>
+        <div class="hero-stats">
+          <div><strong class="num">${lessons.length}</strong><span>lessons</span></div>
+          <div><strong class="num">4</strong><span>levels</span></div>
+          <div><strong class="num">${levels.reduce((s, l) => s + l.quiz.length, 0)}</strong><span>quiz questions</span></div>
+          <div><strong class="num">${prompts.length}</strong><span>ready-made prompts</span></div>
         </div>
       </section>
       <h2 class="section-h">The four levels</h2>
@@ -121,13 +135,15 @@
       <h2 class="section-h">Most popular lessons</h2>
       <p class="section-sub">Short on time? These give the biggest improvement fastest.</p>
       <div class="grid-3">${quickWins}</div>
-      <h2 class="section-h">Reference</h2>
-      <p class="section-sub">Keep these open while you work.</p>
+      <section class="band-section">
+      <h2 class="section-h">Keep these open while you work</h2>
+      <p class="section-sub">Quick reference for when you just need the answer.</p>
       <div class="grid-3">
         <a class="tile" href="#prompts"><span class="tag">${prompts.length} templates</span><h3>Prompt library</h3><p>Copy-ready prompts for writing, analysis, coding and building.</p></a>
         <a class="tile" href="#cheatsheets"><span class="tag">${sheets.length} sheets</span><h3>Cheat sheets</h3><p>Claude Code commands, API parameters, stop reasons, model choice.</p></a>
         <a class="tile" href="#glossary"><span class="tag">${glossary.length} terms</span><h3>Glossary</h3><p>Every term from token to prompt injection, in plain English.</p></a>
       </div>
+      </section>
     </div>`;
   }
 
@@ -140,6 +156,11 @@
         <p class="summary">${lvl.tagline}</p>
         <div class="chips"><span class="chip level">For: ${lvl.audience}</span><span class="chip">${lvl.lessons.length} lessons</span><span class="chip">~${mins} min</span><span class="chip">Quiz: ${lvl.quiz.length} questions</span></div>
       </header>
+      ${levelIntro[lvl.id] ? `<section class="level-intro">
+        <div class="prose">${levelIntro[lvl.id].intro}</div>
+        <div class="outcomes"><h2>By the end of this level you'll be able to</h2><ul>${levelIntro[lvl.id].outcomes.map((o) => `<li>${esc(o)}</li>`).join("")}</ul></div>
+      </section>` : ""}
+      <h2 class="section-h">Lessons</h2>
       <div class="grid-2">
         ${lvl.lessons.map((l, i) => `<a class="tile" href="#${l.id}" ${lc(lvl)}><span class="tag">Lesson ${i + 1} · ${l.minutes} min ${done.has(l.id) ? "· ✓ done" : ""}</span><h3>${esc(l.title)}</h3><p>${esc(l.summary)}</p></a>`).join("")}
         <a class="tile" href="#quiz-${lvl.id}" ${lc(lvl)}><span class="tag">Check yourself ${quizScores[lvl.id] != null ? "· best " + quizScores[lvl.id] + "/" + lvl.quiz.length : ""}</span><h3>Level ${lvl.n} quiz</h3><p>${lvl.quiz.length} questions with explanations.</p></a>
@@ -162,7 +183,10 @@
         <p class="summary">${esc(l.summary)}</p>
         <div class="chips"><span class="chip level">${lvl.name}</span><span class="chip">${l.minutes} min read</span><span class="chip">Lesson ${l.index + 1} of ${lvl.lessons.length}</span></div>
       </header>
+      ${l.why ? `<aside class="why-box"><span class="why-label">Why this matters</span><p>${l.why}</p></aside>` : ""}
       <div class="prose">${l.body}</div>
+      ${l.deeper ? `<section class="deeper prose"><span class="why-label">Going deeper</span><h2>Expert commentary</h2>${l.deeper}</section>` : ""}
+      ${l.takeaways ? `<section class="takeaways"><h2>Key takeaways</h2><ul>${l.takeaways.map((t) => `<li>${esc(t)}</li>`).join("")}</ul></section>` : ""}
       <footer class="lesson-foot">
         <button type="button" class="btn btn-ghost done-toggle ${done.has(l.id) ? "is-done" : ""}" id="doneBtn" data-id="${l.id}">${done.has(l.id) ? "✓ Completed" : "Mark lesson complete"}</button>
         <nav class="pager" aria-label="Lesson navigation">
@@ -250,7 +274,7 @@
       <div class="crumbs"><a href="#home">Home</a> / <span>Learning paths</span></div>
       <header class="lesson-head"><h1>Learning paths by role</h1><p class="summary">Don't need everything? Follow the shortest route to what matters for your job.</p></header>
       <div class="grid-3">
-        ${paths.map((p) => `<section class="path-card" style="border-top:5px solid var(${p.lc})"><h3>${esc(p.title)}</h3><ol>${p.steps.map((id) => { const l = lessonById[id]; return `<li><a href="#${id}">${esc(l.title)}</a> ${done.has(id) ? "✓" : ""}</li>`; }).join("")}</ol></section>`).join("")}
+        ${paths.map((p) => `<section class="path-card" style="--pc: var(${p.lc})"><h3>${esc(p.title)}</h3><ol>${p.steps.map((id) => { const l = lessonById[id]; return `<li><a href="#${id}">${esc(l.title)}</a> ${done.has(id) ? "✓" : ""}</li>`; }).join("")}</ol></section>`).join("")}
       </div>
     </div>`;
   }
@@ -348,7 +372,7 @@
 
   // ---------- Search ----------
   const searchIndex = [
-    ...lessons.map((l) => ({ href: "#" + l.id, title: l.title, sub: `Lesson · ${l.level.name}`, text: (l.title + " " + l.summary + " " + stripTags(l.body)).toLowerCase() })),
+    ...lessons.map((l) => ({ href: "#" + l.id, title: l.title, sub: `Lesson · ${l.level.name}`, text: (l.title + " " + l.summary + " " + stripTags(l.body + (l.deeper || "") + (l.why || ""))).toLowerCase() })),
     ...prompts.map((p) => ({ href: "#prompts", title: p.title, sub: `Prompt · ${p.cat}`, text: (p.title + " " + p.use + " " + p.text).toLowerCase() })),
     ...glossary.map(([t, d]) => ({ href: "#glossary", title: t, sub: "Glossary", text: (t + " " + d).toLowerCase() })),
     ...sheets.map((s) => ({ href: "#cheatsheets", title: s.title, sub: "Cheat sheet", text: (s.title + " " + s.rows.flat().join(" ")).toLowerCase() })),
@@ -387,6 +411,7 @@
     } else if (e.key === "Escape") closeSearch();
   });
   function closeSearch() { results.hidden = true; input.value = ""; input.blur(); }
+  window.addEventListener("hashchange", () => { results.hidden = true; });
   results.addEventListener("click", (e) => { if (e.target.closest("a")) closeSearch(); });
   document.addEventListener("click", (e) => { if (!e.target.closest(".search")) results.hidden = true; });
   document.addEventListener("keydown", (e) => {

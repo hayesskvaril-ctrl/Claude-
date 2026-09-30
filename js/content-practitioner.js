@@ -278,6 +278,7 @@ ${pro("The meta-prompt", "Stuck? Ask Claude to write the prompt: \"I want to get
       },
     ],
     quiz: [
+      { q: "What do all strong prompts in the teardown lesson have in common?", options: ["They use capital letters for emphasis", "They state the audience, the purpose, the output shape and what to do when unsure", "They are always under 20 words", "They start with \"You are a helpful assistant\""], answer: 1, why: "Audience, purpose, format and a fallback remove Claude's guesswork." },
       { q: "Where should you put a long document relative to your question?", options: ["Question first, document after", "Document first, question at the end", "It doesn't matter", "Split it across messages"], answer: 1, why: "Long material at the top and the question at the end improves answer quality." },
       { q: "What is the main benefit of wrapping prompt sections in XML-style tags?", options: ["It makes Claude faster", "It separates instructions from material so they don't blur together", "It is required syntax", "It hides the text from Claude"], answer: 1, why: "Tags give clear structure. They're a convention Claude follows well, not required syntax." },
       { q: "Your team keeps re-uploading the same style guide to every chat. What should they use?", options: ["Artifacts", "A Project with the guide in project knowledge", "Research mode", "A bigger model"], answer: 1, why: "Projects hold standing knowledge and instructions for every chat inside them." },

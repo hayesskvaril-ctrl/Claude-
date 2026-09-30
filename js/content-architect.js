@@ -472,6 +472,7 @@ ${note("Where to go next", "The official Claude developer docs, the Anthropic co
       },
     ],
     quiz: [
+      { q: "A multi-hour agent keeps losing track after compaction. What helps most?", options: ["A longer system prompt", "An external progress file the agent updates and re-reads", "Raising temperature", "Removing all tools"], answer: 1, why: "External memory survives compaction and new sessions." },
       { q: "The API is stateless. How do you have a multi-turn conversation?", options: ["Pass a conversation_id", "Send the full message history with each request", "The API remembers automatically", "Use a system prompt"], answer: 1, why: "Every request includes the whole conversation so far." },
       { q: "Claude returns two tool_use blocks in one response. How do you send results back?", options: ["Two separate user messages", "Both tool_result blocks in one user message", "Only the first result", "As a system prompt"], answer: 1, why: "All results go in one message; splitting them discourages parallel tool calls." },
       { q: "Your cache hit rate is zero. What's a likely culprit?", options: ["The model is too small", "A timestamp in the system prompt changes every request", "max_tokens is too high", "Streaming is on"], answer: 1, why: "Caching is a prefix match. Any change to the prefix invalidates it." },

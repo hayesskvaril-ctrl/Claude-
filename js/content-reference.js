@@ -213,6 +213,8 @@ Ask me questions first if anything important is missing.` },
   ];
 
   ACADEMY.glossary = [
+    ["Context engineering", "Curating what a model sees over a long task: compact tool results, clearing, compaction, memory files and sub-agents."],
+    ["Knowledge cutoff", "The date after which a model's training data stops; it won't know later events without search."],
     ["Agent", "A system where the model decides which steps and tools to use in a loop until a goal is met."],
     ["Agent SDK", "A library (Python, TypeScript) that provides Claude Code's agent loop, tools and context management for building your own agents."],
     ["Artifact", "A standalone piece of content Claude creates in its own panel: documents, web pages, apps, diagrams."],
@@ -250,11 +252,11 @@ Ask me questions first if anything important is missing.` },
   ];
 
   ACADEMY.paths = [
-    { title: "Writers, marketers and communicators", lc: "--l2", steps: ["first-conversation", "prompting-fundamentals", "projects", "personalize", "artifacts", "research"] },
+    { title: "Writers, marketers and communicators", lc: "--l2", steps: ["first-conversation", "prompting-fundamentals", "prompt-teardown", "projects", "personalize", "artifacts", "research"] },
     { title: "Analysts and researchers", lc: "--l1", steps: ["files-and-images", "advanced-prompting", "research", "connectors", "artifacts", "structured-outputs"] },
     { title: "Managers and team leads", lc: "--l4", steps: ["what-is-claude", "safety-privacy", "everyday-uses", "projects", "connectors", "common-mistakes"] },
-    { title: "Software developers", lc: "--l3", steps: ["coding-in-chat", "claude-code-intro", "agentic-workflow", "claude-md", "skills-commands", "subagents", "automation-ci"] },
-    { title: "AI product engineers", lc: "--l4", steps: ["api-quickstart", "messages-anatomy", "tool-use", "structured-outputs", "caching-cost", "agents", "evals", "production"] },
-    { title: "Students and learners", lc: "--l1", steps: ["what-is-claude", "first-conversation", "safety-privacy", "prompting-fundamentals", "personalize"] },
+    { title: "Software developers", lc: "--l3", steps: ["coding-in-chat", "claude-code-intro", "agentic-workflow", "feature-walkthrough", "claude-md", "skills-commands", "subagents", "automation-ci"] },
+    { title: "AI product engineers", lc: "--l4", steps: ["api-quickstart", "messages-anatomy", "tool-use", "structured-outputs", "caching-cost", "agents", "context-engineering", "build-mcp-server", "evals", "production"] },
+    { title: "Students and learners", lc: "--l1", steps: ["how-claude-works", "what-is-claude", "first-conversation", "safety-privacy", "prompting-fundamentals", "personalize"] },
   ];
 })();
