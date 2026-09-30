@@ -35,9 +35,8 @@
   const savedTheme = store.get("ca-theme", null);
   if (savedTheme) document.documentElement.dataset.theme = savedTheme;
   themeBtn.addEventListener("click", () => {
-    const isDark = document.documentElement.dataset.theme
-      ? document.documentElement.dataset.theme === "dark"
-      : matchMedia("(prefers-color-scheme: dark)").matches;
+    // Dark is the default look; the toggle switches to a light "daylight" variant.
+    const isDark = document.documentElement.dataset.theme !== "light";
     const next = isDark ? "light" : "dark";
     document.documentElement.dataset.theme = next;
     store.set("ca-theme", next);
@@ -100,52 +99,107 @@
   // ---------- Views ----------
   function viewHome() {
     const next = lessons.find((l) => !done.has(l.id));
+    const pad = (n) => String(n).padStart(2, "0");
     const rungs = levels.map((lvl) => {
       const count = lvl.lessons.filter((l) => done.has(l.id)).length;
       const mins = lvl.lessons.reduce((s, l) => s + l.minutes, 0);
       return `<a class="rung" href="#level-${lvl.id}" ${lc(lvl)}>
-        <span class="lv">Level ${lvl.n}</span>
+        <span class="rung-n num">${pad(lvl.n)}</span>
         <h3>${lvl.name}</h3>
         <p>${lvl.tagline}</p>
-        <div class="meta"><span>${lvl.lessons.length} lessons · ${mins} min</span><span class="num">${count}/${lvl.lessons.length}</span></div>
+        <dl class="rung-spec"><div><dt>Lessons</dt><dd class="num">${lvl.lessons.length}</dd></div><div><dt>Time</dt><dd class="num">${mins} min</dd></div><div><dt>Done</dt><dd class="num">${count}/${lvl.lessons.length}</dd></div></dl>
         <div class="mini-bar"><span style="width:${(count / lvl.lessons.length) * 100}%"></span></div>
+      </a>`;
+    }).join("");
+    const clipCards = Object.entries(Clips.defs).filter(([id]) => id !== "prompt-to-answer").map(([id, d]) => {
+      const l = lessonById[d.lessons[0]];
+      return `<a class="clip-card" href="#${l.id}">
+        <div class="clip-thumb"><canvas width="${Clips.W}" height="${Clips.H}" data-poster="${id}" aria-hidden="true"></canvas><span class="thumb-play" aria-hidden="true"><svg viewBox="0 0 24 24" width="22" height="22"><path d="M8 5v14l11-7z" fill="currentColor"/></svg></span><span class="thumb-time num">${Math.floor(d.duration / 60)}:${String(d.duration % 60).padStart(2, "0")}</span></div>
+        <h3>${esc(d.title)}</h3>
+        <p>${esc(d.blurb)}</p>
+        <span class="tag">In lesson: ${esc(l.title)}</span>
       </a>`;
     }).join("");
     const quickWins = ["first-conversation", "prompting-fundamentals", "claude-code-intro", "tool-use", "agentic-workflow", "projects"]
       .map((id) => lessonById[id]).map((l) => `<a class="tile" href="#${l.id}" ${lc(l.level)}><span class="tag">${l.level.name} · ${l.minutes} min</span><h3>${esc(l.title)}</h3><p>${esc(l.summary)}</p></a>`).join("");
+    return `<section class="hero">
+        <canvas class="hero-canvas" aria-hidden="true"></canvas>
+        <div class="hero-inner">
+          <span class="eyebrow">Claude training · free · self-paced</span>
+          <h1>Master Claude</h1>
+          <p class="lede">From your first question to agents in production. One course, every level, with expert commentary, animated explainers and hands-on practice.</p>
+          <div class="btn-row">
+            <a class="btn btn-primary" href="#${next ? next.id : "prompts"}">${done.size ? "Continue learning" : "Start learning"}</a>
+            <a class="btn btn-ghost" href="#watch">Watch the clips</a>
+          </div>
+        </div>
+        <dl class="spec-strip">
+          <div><dt>Lessons</dt><dd class="num">${lessons.length}</dd></div>
+          <div><dt>Levels</dt><dd class="num">4</dd></div>
+          <div><dt>Animated clips</dt><dd class="num">${Object.keys(Clips.defs).length}</dd></div>
+          <div><dt>Quiz questions</dt><dd class="num">${levels.reduce((s, l) => s + l.quiz.length, 0)}</dd></div>
+          <div><dt>Prompts</dt><dd class="num">${prompts.length}</dd></div>
+        </dl>
+      </section>
+      <div class="wide home">
+        <section class="feature">
+          <div class="feature-copy">
+            <span class="eyebrow">How it works</span>
+            <h2>See how Claude thinks</h2>
+            <p>Tokens, the context window and next-token prediction explain nearly everything about how Claude behaves: why context matters, why long chats drift, and why a good brief beats a clever phrase.</p>
+            <a class="btn btn-ghost" href="#how-claude-works">Read the lesson</a>
+          </div>
+          <div class="feature-media">${Clips.markup("prompt-to-answer", { heading: false })}</div>
+        </section>
+        <section>
+          <span class="eyebrow">The course</span>
+          <h2 class="section-h">Four levels. One course.</h2>
+          <p class="section-sub">Each level builds on the one before it. Skip ahead if you already know the basics.</p>
+          <div class="ladder">${rungs}</div>
+        </section>
+        <section>
+          <span class="eyebrow">Watch</span>
+          <h2 class="section-h">Watch and learn</h2>
+          <p class="section-sub">Short animated explainers, each placed in the lesson it belongs to.</p>
+          <div class="grid-3 clip-grid">${clipCards}</div>
+          <a class="btn btn-ghost" href="#watch">All clips</a>
+        </section>
+        <section>
+          <span class="eyebrow">Start here</span>
+          <h2 class="section-h">Most popular lessons</h2>
+          <p class="section-sub">Short on time? These give the biggest improvement fastest.</p>
+          <div class="grid-3">${quickWins}</div>
+        </section>
+        <section class="band-section">
+          <span class="eyebrow">Reference</span>
+          <h2 class="section-h">Keep these open while you work</h2>
+          <div class="grid-3">
+            <a class="tile" href="#prompts"><span class="tag">${prompts.length} templates</span><h3>Prompt library</h3><p>Copy-ready prompts for writing, analysis, coding and building.</p></a>
+            <a class="tile" href="#cheatsheets"><span class="tag">${sheets.length} sheets</span><h3>Cheat sheets</h3><p>Claude Code commands, API parameters, stop reasons, model choice.</p></a>
+            <a class="tile" href="#glossary"><span class="tag">${glossary.length} terms</span><h3>Glossary</h3><p>Every term from token to prompt injection, in plain English.</p></a>
+          </div>
+        </section>
+      </div>`;
+  }
+
+  function viewWatch() {
     return `<div class="wide">
-      <section class="hero">
-        <span class="eyebrow">Free, self-paced Claude training</span>
-        <h1>Get brilliant at Claude.</h1>
-        <p class="lede">Everything in one place, from your very first question to shipping agents on the API. Plain-English lessons with expert commentary, copy-ready prompts and code, and quizzes to check you've got it.</p>
-        <div class="btn-row">
-          <a class="btn btn-light" href="#${next ? next.id : "prompts"}">${done.size ? "Continue: " + esc(next ? next.title : "Prompt library") : "Start learning"} →</a>
-          <a class="btn btn-outline-light" href="#paths">Find your path</a>
-        </div>
-        <div class="hero-stats">
-          <div><strong class="num">${lessons.length}</strong><span>lessons</span></div>
-          <div><strong class="num">4</strong><span>levels</span></div>
-          <div><strong class="num">${levels.reduce((s, l) => s + l.quiz.length, 0)}</strong><span>quiz questions</span></div>
-          <div><strong class="num">${prompts.length}</strong><span>ready-made prompts</span></div>
-        </div>
-      </section>
-      <h2 class="section-h">The four levels</h2>
-      <p class="section-sub">Each level builds on the one before it. Skip ahead if you already know the basics.</p>
-      <div class="ladder">${rungs}</div>
-      <h2 class="section-h">Most popular lessons</h2>
-      <p class="section-sub">Short on time? These give the biggest improvement fastest.</p>
-      <div class="grid-3">${quickWins}</div>
-      <section class="band-section">
-      <h2 class="section-h">Keep these open while you work</h2>
-      <p class="section-sub">Quick reference for when you just need the answer.</p>
-      <div class="grid-3">
-        <a class="tile" href="#prompts"><span class="tag">${prompts.length} templates</span><h3>Prompt library</h3><p>Copy-ready prompts for writing, analysis, coding and building.</p></a>
-        <a class="tile" href="#cheatsheets"><span class="tag">${sheets.length} sheets</span><h3>Cheat sheets</h3><p>Claude Code commands, API parameters, stop reasons, model choice.</p></a>
-        <a class="tile" href="#glossary"><span class="tag">${glossary.length} terms</span><h3>Glossary</h3><p>Every term from token to prompt injection, in plain English.</p></a>
+      <div class="crumbs"><a href="#home">Home</a> / <span>Watch</span></div>
+      <header class="lesson-head"><h1>Watch</h1><p class="summary">Animated explainers for the ideas that are easier to see than to read. Each one plays when it scrolls into view; use the controls to pause, scrub or read the transcript.</p></header>
+      <div class="watch-list">
+        ${Object.entries(Clips.defs).map(([id, d]) => `<section class="watch-item">
+          <div class="watch-copy">
+            <span class="eyebrow num">${Math.floor(d.duration / 60)}:${String(d.duration % 60).padStart(2, "0")} · animated clip</span>
+            <h2>${esc(d.title)}</h2>
+            <p>${esc(d.blurb)}</p>
+            <p class="watch-links">Appears in: ${d.lessons.map((lid) => `<a href="#${lid}">${esc(lessonById[lid].title)}</a>`).join(", ")}</p>
+          </div>
+          <div class="watch-media">${Clips.markup(id, { heading: false })}</div>
+        </section>`).join("")}
       </div>
-      </section>
     </div>`;
   }
+
 
   function viewLevel(lvl) {
     const mins = lvl.lessons.reduce((s, l) => s + l.minutes, 0);
@@ -184,6 +238,7 @@
         <div class="chips"><span class="chip level">${lvl.name}</span><span class="chip">${l.minutes} min read</span><span class="chip">Lesson ${l.index + 1} of ${lvl.lessons.length}</span></div>
       </header>
       ${l.why ? `<aside class="why-box"><span class="why-label">Why this matters</span><p>${l.why}</p></aside>` : ""}
+      ${Clips.forLesson(l.id) ? `<section class="lesson-clip"><span class="why-label">Watch · ${Clips.defs[Clips.forLesson(l.id)].duration} seconds</span>${Clips.markup(Clips.forLesson(l.id))}</section>` : ""}
       <div class="prose">${l.body}</div>
       ${l.deeper ? `<section class="deeper prose"><span class="why-label">Going deeper</span><h2>Expert commentary</h2>${l.deeper}</section>` : ""}
       ${l.takeaways ? `<section class="takeaways"><h2>Key takeaways</h2><ul>${l.takeaways.map((t) => `<li>${esc(t)}</li>`).join("")}</ul></section>` : ""}
@@ -298,8 +353,12 @@
     else if (id === "cheatsheets") html = viewSheets();
     else if (id === "glossary") html = viewGlossary();
     else if (id === "paths") html = viewPaths();
+    else if (id === "watch") html = viewWatch();
     else html = viewNotFound();
+    Clips.unmountAll();
     main.innerHTML = html;
+    main.classList.toggle("is-home", id === "home");
+    Clips.mount(main);
     renderNav(navId);
     setMenu(false);
     const title = main.querySelector("h1");
@@ -374,6 +433,7 @@
   const searchIndex = [
     ...lessons.map((l) => ({ href: "#" + l.id, title: l.title, sub: `Lesson · ${l.level.name}`, text: (l.title + " " + l.summary + " " + stripTags(l.body + (l.deeper || "") + (l.why || ""))).toLowerCase() })),
     ...prompts.map((p) => ({ href: "#prompts", title: p.title, sub: `Prompt · ${p.cat}`, text: (p.title + " " + p.use + " " + p.text).toLowerCase() })),
+    ...Object.values(Clips.defs).map((d) => ({ href: "#watch", title: d.title, sub: "Animated clip", text: (d.title + " " + d.blurb + " " + d.captions.map((c) => c[2]).join(" ")).toLowerCase() })),
     ...glossary.map(([t, d]) => ({ href: "#glossary", title: t, sub: "Glossary", text: (t + " " + d).toLowerCase() })),
     ...sheets.map((s) => ({ href: "#cheatsheets", title: s.title, sub: "Cheat sheet", text: (s.title + " " + s.rows.flat().join(" ")).toLowerCase() })),
   ];

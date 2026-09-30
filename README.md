@@ -13,6 +13,8 @@ A self-paced training website for Claude, from your first chat to production age
 
 Every lesson opens with **why it matters** and closes with **expert commentary** and **key takeaways**. Each level starts with an introduction and learning outcomes.
 
+Seven **animated explainer clips** (tokens and context, long chats, prompt anatomy, the agentic coding loop, tool use, prompt caching, subagents) play inside the lessons they belong to and on the Watch page, with play/pause, scrubbing, captions and transcripts.
+
 Plus a prompt library, cheat sheets, a glossary, learning paths by role, a quiz for each level, full-text search, progress tracking (stored in your browser) and light/dark themes.
 
 ## Run it
@@ -39,8 +41,23 @@ js/content-architect.js    Level 4 lessons + quiz
 js/content-reference.js    prompt library, cheat sheets, glossary, learning paths
 js/commentary-1.js         commentary + new lessons, Levels 1-2
 js/commentary-2.js         commentary + new lessons, Levels 3-4
+js/clips.js                animated clip engine, clip definitions, hero scene
+scripts/export-clips.mjs   renders every clip to MP4 in videos/
+videos/                    exported MP4s (1080p, captions burned in)
 js/app.js                  routing, navigation, search, progress, quizzes
 ```
+
+## Exporting the clips as video
+
+The clips are drawn in code, so they stay sharp at any size and can be re-rendered after edits:
+
+```bash
+npm install playwright
+node scripts/export-clips.mjs              # all clips
+node scripts/export-clips.mjs tool-use     # just one
+```
+
+Requires `ffmpeg` on your PATH (or `FFMPEG=/path/to/ffmpeg`). Output is 1920x1080, 30 fps, H.264, with a title card and burned-in captions.
 
 ## Adding a lesson
 
