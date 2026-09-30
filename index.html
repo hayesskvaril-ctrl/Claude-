@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Claude Academy</title>
+<meta name="description" content="A complete, self-paced training course for Claude, from your first chat to production agents.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=JetBrains+Mono:wght@400;600&display=swap">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<!--BODY-START-->
+<a class="skip" href="#main">Skip to lesson</a>
+<header class="topbar">
+  <button class="icon-btn menu-btn" id="menuBtn" aria-label="Open course menu" aria-expanded="false">
+    <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/></svg>
+  </button>
+  <a class="brand" href="#home">
+    <span class="brand-mark" aria-hidden="true"><span></span><span></span><span></span><span></span></span>
+    <span class="brand-name">Claude Academy</span>
+  </a>
+  <div class="search">
+    <label for="searchInput" class="sr-only">Search lessons</label>
+    <input id="searchInput" type="search" placeholder="Search lessons, prompts, terms…" autocomplete="off">
+    <kbd class="search-kbd">/</kbd>
+    <div class="search-results" id="searchResults" hidden></div>
+  </div>
+  <nav class="top-links" aria-label="Reference">
+    <a href="#prompts">Prompt library</a>
+    <a href="#cheatsheets">Cheat sheets</a>
+    <a href="#glossary">Glossary</a>
+  </nav>
+  <button class="icon-btn" id="themeBtn" aria-label="Toggle dark mode">
+    <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" fill="currentColor"/></svg>
+  </button>
+</header>
+
+<div class="shell">
+  <aside class="sidebar" id="sidebar" aria-label="Course contents">
+    <div class="progress-card">
+      <div class="progress-label"><span>Your progress</span><span id="progressText" class="num">0 / 0</span></div>
+      <div class="progress-bar"><span id="progressFill"></span></div>
+    </div>
+    <nav id="courseNav"></nav>
+    <div class="side-extra">
+      <a href="#paths">Learning paths by role</a>
+      <a href="#prompts">Prompt library</a>
+      <a href="#cheatsheets">Cheat sheets</a>
+      <a href="#glossary">Glossary</a>
+      <button class="link-btn" id="resetBtn" type="button">Reset progress</button>
+    </div>
+  </aside>
+  <div class="scrim" id="scrim" hidden></div>
+  <main id="main" tabindex="-1"></main>
+</div>
+<!--BODY-END-->
+<script src="js/helpers.js"></script>
+<script src="js/content-foundations.js"></script>
+<script src="js/content-practitioner.js"></script>
+<script src="js/content-builder.js"></script>
+<script src="js/content-architect.js"></script>
+<script src="js/content-reference.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
